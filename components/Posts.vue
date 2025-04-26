@@ -7,17 +7,20 @@
  
 </template>
 
-
 <script setup>
-import { useTemplateRef } from'vue'
-import PostItem from '@/components/PostItem.vue'
+import { useTemplateRef } from'vue';
+
+import PostItem from '@/components/PostItem.vue';
+import { useNuxtApp } from 'nuxt/app';
+
+const { $eventBus } = useNuxtApp();
 
 const props = defineProps({
   posts: {
     type: Array,
     required: true
   }
-})
+});
 
 const STEP = 20;
 let page = 1;
@@ -34,11 +37,33 @@ const loadMore = () => {
   }
 }
 
+const handleSort = (field) => {
+  visiblePosts.value.sort((a, b) => {
+    const aValue = a[field];
+    const bValue = b[field];
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return aValue - bValue;
+    }
+
+    const aStr = aValue.toLowerCase();
+    const bStr = bValue.toLowerCase();
+
+    if (aStr < bStr){
+      return -1;
+    }
+    if (aStr > bStr){
+      return 1;
+    }
+    return 0;
+  })
+  $eventBus.emit('scroll-to-top')
+}
+
 onMounted(() => {
   observer = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting) {
-        loadMore()
+        loadMore();
       }
     },
     { rootMargin: '100px' }
@@ -55,7 +80,7 @@ onBeforeUnmount(() => {
   }
 })
 
-
+$eventBus.on('sort-by', handleSort);
 </script>
 
 <style lang="scss" scoped>

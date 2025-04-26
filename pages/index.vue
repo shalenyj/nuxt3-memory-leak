@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import Posts from '@/components/Posts.vue'
+import Posts from '@/components/Posts.vue';
 
-const { data: posts } = await useAsyncData('post', () => $fetch('https://jsonplaceholder.typicode.com/posts'))
+const { data: posts } = await useAsyncData('post', () => $fetch('https://jsonplaceholder.typicode.com/posts'));
 </script>

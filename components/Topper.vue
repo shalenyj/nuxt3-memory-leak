@@ -4,16 +4,26 @@
     <nav>
       <NuxtLink to="/">All Posts</NuxtLink>
       <button id="to-top" type="button" @click="handleToTop">To Top</button>
+      <button id="to-top" type="button" @click="handleSort('title')">Sort by Title</button>
+      <button id="to-top" type="button" @click="handleSort('id')">Sort by Id</button>
     </nav>
   </header>
 </template>
 
 <script setup>
+import { useNuxtApp } from 'nuxt/app';
+
+const { $eventBus } = useNuxtApp();
 
 const handleToTop = () => {
-  console.log('herere')
-  window.scrollTo({ top: 0,behavior: "smooth"})
+  window.scrollTo({ top: 0, behavior: "smooth"});
 }
+
+const handleSort = (field) => {
+  $eventBus.emit('sort-by', field);
+}
+
+$eventBus.on('scroll-to-top', handleToTop);
 
 </script>
 
